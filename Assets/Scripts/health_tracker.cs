@@ -31,6 +31,7 @@ public class health_tracker : MonoBehaviour
         }
     }
 
+    // Control the spawning of player hearts
     void ProduceHearts()
     {
 
