@@ -66,33 +66,34 @@ public class platformer : MonoBehaviour
         WallJump();
         CheckIfOnWall();
         SpeedCheck();
-        Dash();
+        //Dash();
 
         if (Input.GetKeyDown(KeyCode.L)) currentHealth -= 1;
         if (currentHealth <= 0) Start();
     }
 
+    // Move player left and right
     void Move()
     {
-        if (Math.Abs(rigBod.velocity.x) < topSpeed)
+        float x = Input.GetAxisRaw("Horizontal");
+        if (x != 0)
         {
-            float x = Input.GetAxisRaw("Horizontal");
-            if (x != 0)
-            {
-                float moveBy = x * acceleration;
-                rigBod.velocity += new Vector2(moveBy, 0);
-            }
-            else if (rigBod.velocity.x > 0 && isGrounded)
-            {
-                rigBod.velocity -= new Vector2(friction, 0);
-            }
-            else if (rigBod.velocity.x < 0 && isGrounded)
-            {
-                rigBod.velocity += new Vector2(friction, 0);
-            }
+            float moveBy = x * acceleration;
+            rigBod.velocity += new Vector2(moveBy, 0);
+        }
+        else if (rigBod.velocity.x > 0 && isGrounded)
+        {
+            rigBod.velocity -= new Vector2(friction, 0);
+        }
+        else if (rigBod.velocity.x < 0 && isGrounded)
+        {
+            rigBod.velocity += new Vector2(friction, 0);
         }
     }
 
+    // Makes player jump
+    // Controls for a limited number of multiple jumps
+    // TODO: Implement controller support
     void Jump()
     {
         if (!isTouchingWall || isGrounded)
@@ -114,6 +115,7 @@ public class platformer : MonoBehaviour
         }
     }
 
+    // Checks if the player is currently on the ground
     void CheckIfGrounded()
     {
         Collider2D collider = Physics2D.OverlapCircle(isGroundedChecker.position, checkGroundRadius, groundLayer);
@@ -132,15 +134,18 @@ public class platformer : MonoBehaviour
         }
     }
 
+    // Implements a wall jump
+    // TODO: TUNE
     void WallJump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && (CheckIfOnWall() == 1))
+        int onWall = CheckIfOnWall();
+        if (Input.GetKeyDown(KeyCode.Space) && (onWall == 1))
         {
             rigBod.velocity += new Vector2(wallJumpForce, jumpForce/wallJumpDivisor);
             Debug.Log(rigBod.velocity);
             --additionalJumps;
         }
-        if (Input.GetKeyDown(KeyCode.Space) && (CheckIfOnWall() == 2))
+        if (Input.GetKeyDown(KeyCode.Space) && (onWall == 2))
         {
             rigBod.velocity += new Vector2(-wallJumpForce, jumpForce/wallJumpDivisor);
             Debug.Log(rigBod.velocity);
@@ -148,6 +153,7 @@ public class platformer : MonoBehaviour
         }
     }
 
+    // Checks if player is on the wall and returns which side is on the wall
     int CheckIfOnWall()
     {
         Collider2D leftCollider = Physics2D.OverlapCircle(leftWallChecker.position, checkWallRadius, wallLayer);
@@ -180,34 +186,22 @@ public class platformer : MonoBehaviour
         return side;
     }
 
+    // Regulates the speed of the player to a set maximum
+    // TODO: Implement
     void SpeedCheck()
     {
-        if (rigBod.velocity.x > topSpeed)
-        {
-            rigBod.velocity -= new Vector2(topSpeedDeceleration, rigBod.velocity.y);
-        }
-        else if (-rigBod.velocity.x > topSpeed)
-        {
-            rigBod.velocity += new Vector2(topSpeedDeceleration, rigBod.velocity.y);
-        }
-
-        if (rigBod.velocity.y > topSpeed)
-        {
-            rigBod.velocity -= new Vector2(rigBod.velocity.x, topSpeedDeceleration);
-        }
-        else if (-rigBod.velocity.y > topSpeed)
-        {
-            rigBod.velocity += new Vector2(rigBod.velocity.x, topSpeedDeceleration);
-        }
+        Debug.Log(rigBod.velocity.magnitude);
     }
 
+    // Allows a dash move
+    // TODO: Implement
     void Dash()
     {
         if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time - timeSinceLastDash > dashCooldown)
         {
             Debug.Log("Dashed!");
             timeSinceLastDash = Time.time;
-            rigBod.velocity = new Vector2(rigBod.velocity.x + dashMultiplier, rigBod.velocity.y + dashMultiplier);
+            rigBod.velocity = new Vector2(rigBod.velocity.x * dashMultiplier, rigBod.velocity.y + dashMultiplier);
         }
     }
 

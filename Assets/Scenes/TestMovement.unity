@@ -1658,7 +1658,7 @@ MonoBehaviour:
   topSpeed: 15
   acceleration: 0.05
   wallJumpForce: 15
-  jumpForce: 7
+  jumpForce: 15
   isGroundedChecker: {fileID: 728070888}
   checkGroundRadius: 0.05
   groundLayer:
