@@ -6,7 +6,7 @@ using UnityEngine;
 public class platformer : MonoBehaviour
 {
     Rigidbody2D rigBod;
-    public float topSpeed;
+    public float maxSpeed;
     public float acceleration;
     float currentSpeed;
     public float wallJumpForce;
@@ -70,6 +70,11 @@ public class platformer : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.L)) currentHealth -= 1;
         if (currentHealth <= 0) Start();
+    }
+
+    void FixedUpdate()
+    {
+        SpeedCheck();
     }
 
     // Move player left and right
@@ -159,12 +164,12 @@ public class platformer : MonoBehaviour
         Collider2D leftCollider = Physics2D.OverlapCircle(leftWallChecker.position, checkWallRadius, wallLayer);
         Collider2D rightCollider = Physics2D.OverlapCircle(rightWallChecker.position, checkWallRadius, wallLayer);
         int side;
-        if (leftCollider != null)
+        if (leftCollider != null && Input.GetKey(KeyCode.A))
         {
             isTouchingWall = true;
             side = 1;
         }
-        else if (rightCollider != null)
+        else if (rightCollider != null && Input.GetKey(KeyCode.D))
         {
             isTouchingWall = true;
             side = 2;
@@ -175,7 +180,7 @@ public class platformer : MonoBehaviour
             side = 0;
         }
 
-        if (isTouchingWall)
+        if (isTouchingWall && Math.Abs(Input.GetAxisRaw("Horizontal")) > 0)
         {
             if (rigBod.velocity.y >= wallDragSpeed)
                 rigBod.velocity = new Vector2(rigBod.velocity.x, rigBod.velocity.y - wallDragAcceleration);
@@ -190,7 +195,10 @@ public class platformer : MonoBehaviour
     // TODO: Implement
     void SpeedCheck()
     {
-        Debug.Log(rigBod.velocity.magnitude);
+        if (rigBod.velocity.magnitude > maxSpeed)
+        {
+            rigBod.velocity = rigBod.velocity.normalized * maxSpeed;
+        }
     }
 
     // Allows a dash move
