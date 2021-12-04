@@ -52,6 +52,7 @@ public class platformer : MonoBehaviour
     {
         this.transform.position = new Vector2(-0.1232877f, -1.506849f);
         rigBod = GetComponent<Rigidbody2D>();
+        rigBod.velocity = Vector2.zero;
         currentHealth = defaultHealth;
         currentMaxHealth = defaultHealth;
         timeSinceLastDash = 0;
@@ -216,4 +217,5 @@ public class platformer : MonoBehaviour
     public int getHealth() { return currentHealth; }
     public int getMaxHealth() { return maxHealth; }
     public int getCurrentMaxHealth() { return currentMaxHealth; }
+    public void adjustCurrentHealth(int amt) { currentHealth += amt; }
 }
