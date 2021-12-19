@@ -7,6 +7,9 @@ public class basic_enemy : MonoBehaviour
     public float speed;
     public float knockbackSpeed;
     public platformer player;
+    public int startingHealth;
+
+    private int health_;
 
     bool isGroundedLeft = false;
     bool isGroundedRight = false;
@@ -19,7 +22,7 @@ public class basic_enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        health_ = startingHealth;
     }
 
     // Update is called once per frame
@@ -117,6 +120,15 @@ public class basic_enemy : MonoBehaviour
         else
         {
             return 3;
+        }
+    }
+
+    public void Damage(int amt)
+    {
+        health_ -= amt;
+        if (health_ <= 0)
+        {
+            Destroy(this.transform.gameObject);
         }
     }
 }
