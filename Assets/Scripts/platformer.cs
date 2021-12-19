@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class platformer : MonoBehaviour
 {
@@ -47,6 +48,13 @@ public class platformer : MonoBehaviour
     public float dashCooldown;
     float timeSinceLastDash;
 
+    public float timeBetweenAttacks;
+    private float timeSinceAttack;
+
+    private int attackDirection;
+
+    public GameObject bulletPrefab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -56,6 +64,8 @@ public class platformer : MonoBehaviour
         currentHealth = defaultHealth;
         currentMaxHealth = defaultHealth;
         timeSinceLastDash = 0;
+        attackDirection = 0;
+        timeSinceAttack = 0;
     }
 
     // Update is called once per frame
@@ -68,9 +78,13 @@ public class platformer : MonoBehaviour
         CheckIfOnWall();
         SpeedCheck();
         //Dash();
+        if (Input.GetMouseButtonDown(0))
+        {
+            Attack();
+        }
 
-        if (Input.GetKeyDown(KeyCode.L)) currentHealth -= 1;
-        if (currentHealth <= 0) Start();
+        if (currentHealth <= 0)
+            SceneManager.LoadScene(0);
     }
 
     void FixedUpdate()
@@ -95,6 +109,9 @@ public class platformer : MonoBehaviour
         {
             rigBod.velocity += new Vector2(friction, 0);
         }
+
+        if (x < 0) { attackDirection = 1; }
+        else if (x > 0) { attackDirection = 0; }
     }
 
     // Makes player jump
@@ -148,13 +165,11 @@ public class platformer : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && (onWall == 1))
         {
             rigBod.velocity += new Vector2(wallJumpForce, jumpForce/wallJumpDivisor);
-            Debug.Log(rigBod.velocity);
             --additionalJumps;
         }
         if (Input.GetKeyDown(KeyCode.Space) && (onWall == 2))
         {
             rigBod.velocity += new Vector2(-wallJumpForce, jumpForce/wallJumpDivisor);
-            Debug.Log(rigBod.velocity);
             --additionalJumps;
         }
     }
@@ -186,7 +201,6 @@ public class platformer : MonoBehaviour
             if (rigBod.velocity.y >= wallDragSpeed)
                 rigBod.velocity = new Vector2(rigBod.velocity.x, rigBod.velocity.y - wallDragAcceleration);
             else rigBod.velocity = new Vector2(rigBod.velocity.x, wallDragSpeed);
-            Debug.Log("Slow deceleration");
         }
 
         return side;
@@ -211,6 +225,16 @@ public class platformer : MonoBehaviour
             Debug.Log("Dashed!");
             timeSinceLastDash = Time.time;
             rigBod.velocity = new Vector2(rigBod.velocity.x * dashMultiplier, rigBod.velocity.y + dashMultiplier);
+        }
+    }
+
+    void Attack()
+    {
+        if (Time.time - timeSinceAttack >= timeBetweenAttacks)
+        {
+            GameObject clone = Instantiate(bulletPrefab, transform.position, transform.rotation);
+            clone.GetComponent<DamageEnemy>().SetDirection(attackDirection);
+            timeSinceAttack = Time.time;
         }
     }
 

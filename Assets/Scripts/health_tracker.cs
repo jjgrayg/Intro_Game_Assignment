@@ -48,7 +48,7 @@ public class health_tracker : MonoBehaviour
 
         for (int i = 0; i < numFullHearts; ++i)
         {
-            GameObject temp = new GameObject("FullHeart" + i, typeof(RawImage), typeof(RectTransform));
+            GameObject temp = new GameObject("FullHeart" + i, typeof(RawImage));
             temp.transform.SetParent(GameObject.Find("HealthInfo").transform);
             temp.GetComponent<RawImage>().texture = fullHeart;
             temp.GetComponent<RectTransform>().position = temp.transform.parent.GetComponent<RectTransform>().position + new Vector3(-236 + (50 * heartIndex), temp.transform.position.y, temp.transform.position.z);
@@ -58,7 +58,7 @@ public class health_tracker : MonoBehaviour
 
         for (int i = 0; i < numHalfHearts; ++i)
         {
-            GameObject temp = new GameObject("HalfHeart" + i, typeof(RawImage), typeof(RectTransform));
+            GameObject temp = new GameObject("HalfHeart" + i, typeof(RawImage));
             temp.transform.SetParent(GameObject.Find("HealthInfo").transform);
             temp.GetComponent<RawImage>().texture = halfHeart;
             temp.GetComponent<RectTransform>().position = temp.transform.parent.GetComponent<RectTransform>().position + new Vector3(-236 + (50 * heartIndex), temp.transform.position.y, temp.transform.position.z);
@@ -68,7 +68,7 @@ public class health_tracker : MonoBehaviour
 
         for (int i = 0; i < numEmptyHearts; ++i)
         {
-            GameObject temp = new GameObject("EmptyHeart" + i, typeof(RawImage), typeof(RectTransform));
+            GameObject temp = new GameObject("EmptyHeart" + i, typeof(RawImage));
             temp.transform.SetParent(GameObject.Find("HealthInfo").transform);
             temp.GetComponent<RawImage>().texture = emptyHeart;
             temp.GetComponent<RectTransform>().position = temp.transform.parent.GetComponent<RectTransform>().position + new Vector3(-236 + (50 * heartIndex), temp.transform.position.y, temp.transform.position.z);
